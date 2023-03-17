@@ -8,8 +8,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.time.LocalDateTime;
-import java.time.chrono.ChronoZonedDateTime;
 
 @RestController
 @RequestMapping("/transaction")
@@ -19,8 +19,8 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @PostMapping()
-    public ResponseEntity<?> postTransaction(@RequestBody @Valid TransactionRequest transactionRequest){
-        if(transactionRequest.getTimestamp().isBefore(ChronoZonedDateTime.from(LocalDateTime.now().minusSeconds(30))))
+    public ResponseEntity<?> postTransaction(@RequestBody @Valid TransactionRequest transactionRequest) {
+        if (transactionRequest.getTimestamp().isBefore(LocalDateTime.now().minusSeconds(30)))
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
         //Only save transactions completed less than 30seconds
@@ -29,12 +29,12 @@ public class TransactionController {
     }
 
     @GetMapping("/statistics")
-    public ResponseEntity<StatisticsResponse> getTransactionStatistics(){
+    public ResponseEntity<StatisticsResponse> getTransactionStatistics() {
         return new ResponseEntity<>(transactionService.getStatistics(), HttpStatus.OK);
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteTransaction(){
+    public ResponseEntity<?> deleteTransaction() {
         transactionService.deleteTransactions();
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

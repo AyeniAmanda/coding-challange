@@ -1,11 +1,11 @@
 package com.example.seerbit_coding_challange.request;
 
 
+import com.example.seerbit_coding_challange.annotation.DateValidator;
 import com.example.seerbit_coding_challange.utils.LocalDateTimeDeserializer;
 import com.example.seerbit_coding_challange.utils.LocalDateTimeSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
@@ -13,7 +13,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -27,7 +27,7 @@ public class TransactionRequest {
     @NotNull(message = "Date Cannot be null")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @com.example.codingchallenge.validator.DateValidator
-    private final ZonedDateTime timestamp;
+    @DateValidator
+    private final LocalDateTime timestamp;
 
 }

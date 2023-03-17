@@ -13,6 +13,7 @@ public enum Messages {
     NOT_EQUAL("Record is not Equal");
 
     private String message;
+
     Messages(String message) {
         this.message = message;
     }

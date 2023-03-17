@@ -1,4 +1,5 @@
 package com.example.seerbit_coding_challange.exception;
+
 import com.example.seerbit_coding_challange.enums.Messages;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;

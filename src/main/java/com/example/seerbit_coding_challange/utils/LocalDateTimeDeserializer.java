@@ -1,4 +1,5 @@
 package com.example.seerbit_coding_challange.utils;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -19,7 +20,7 @@ public class LocalDateTimeDeserializer extends StdDeserializer<LocalDateTime> {
 
     @Override
     public LocalDateTime deserialize(JsonParser jp, DeserializationContext context)
-            throws IOException, JsonProcessingException {
+            throws IOException {
         return LocalDateTime.parse(jp.readValueAs(String.class), ISO_DATE_TIME);
     }
 
