@@ -26,5 +26,4 @@ public final class Utils {
                 .timestamp(dateTime)
                 .amount(new BigDecimal(amount)).build();
     }
-
 }

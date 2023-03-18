@@ -9,5 +9,4 @@ public class SeerBitCodingChallengeApplication {
     public static void main(String[] args) {
         SpringApplication.run(SeerBitCodingChallengeApplication.class, args);
     }
-
 }

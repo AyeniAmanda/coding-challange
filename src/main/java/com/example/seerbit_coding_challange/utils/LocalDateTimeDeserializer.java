@@ -23,5 +23,4 @@ public class LocalDateTimeDeserializer extends StdDeserializer<LocalDateTime> {
             throws IOException {
         return LocalDateTime.parse(jp.readValueAs(String.class), ISO_DATE_TIME);
     }
-
 }

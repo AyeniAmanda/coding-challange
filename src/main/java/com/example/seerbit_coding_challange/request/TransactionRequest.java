@@ -29,5 +29,4 @@ public class TransactionRequest {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @DateValidator
     private final LocalDateTime timestamp;
-
 }

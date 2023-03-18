@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
@@ -45,7 +46,7 @@ public class TransactionServiceImplTest {
         assertEquals(new BigDecimal("20.50"), response.getMin(), "Minimum will be 20.50");
         assertEquals(new BigDecimal("50.50"), response.getMax(), "Maximum will be 50.50");
         assertEquals(new BigDecimal("142.00"), response.getSum(), "Sum will be 142");
-        assertEquals(new BigDecimal("142.00").divide(BigDecimal.valueOf(4)), response.getAvg(), "Sum will be 142");
+        assertEquals(new BigDecimal("142.00").divide(BigDecimal.valueOf(4), RoundingMode.HALF_UP), response.getAvg(), "Sum will be 142");
     }
 
     @Test

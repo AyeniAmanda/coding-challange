@@ -19,5 +19,4 @@ public class StatisticsResponse implements Serializable {
     private BigDecimal avg = new BigDecimal("0.00");
     private BigDecimal sum = new BigDecimal("0.00");
     private long count = 0;
-
 }
