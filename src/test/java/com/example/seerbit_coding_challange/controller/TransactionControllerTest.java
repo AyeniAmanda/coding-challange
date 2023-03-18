@@ -6,11 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 
@@ -27,13 +24,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-@ExtendWith(SpringExtension.class)
+
+
+
 @WebMvcTest(TransactionController.class)
 class TransactionControllerTest {
 
     private final String URL_BASE = "/transaction";
-    @Autowired
-    private MockMvc mockMvc;
+    private final MockMvc mockMvc;
     private final ObjectMapper objectMapper;
 
     @MockBean
@@ -65,7 +63,7 @@ class TransactionControllerTest {
     void whenTimestampIsStaleByAtLeast30Seconds_thenShouldReturnStatusNoContent() throws Exception {
         TransactionRequest transactionRequest = TransactionRequest.builder()
                 .amount(new BigDecimal("12.3343"))
-                .timestamp(LocalDateTime.parse("2022-05-13T01:30:51.312Z", ISO_DATE_TIME))
+                .timestamp(LocalDateTime.parse("2022-05-13T01:30:51.312Z", ISO_DATE_TIME ))
                 .build();
 
         postTransaction(transactionRequest, status().isNoContent());
@@ -75,7 +73,7 @@ class TransactionControllerTest {
     void whenMoreThanFourFractionalDigits_thenShouldGiveConstraintViolations() throws Exception {
         TransactionRequest transactionRequest = TransactionRequest.builder()
                 .amount(new BigDecimal("12.33435"))
-                .timestamp(LocalDateTime.parse("2022-05-13T00:45:51.312Z", ISO_DATE_TIME))
+                .timestamp(LocalDateTime.parse("2022-05-13T00:45:51.312Z", ISO_DATE_TIME ))
                 .build();
 
         postTransaction(transactionRequest, status().isUnprocessableEntity());
@@ -85,7 +83,7 @@ class TransactionControllerTest {
     void whenDateIsInFuture_thenShouldGiveConstraintViolations() throws Exception {
         TransactionRequest transactionRequest = TransactionRequest.builder()
                 .amount(new BigDecimal("12.35"))
-                .timestamp(LocalDateTime.parse("2023-05-13T00:45:51.312Z", ISO_DATE_TIME))
+                .timestamp(LocalDateTime.parse("2023-05-13T00:45:51.312Z", ISO_DATE_TIME ))
                 .build();
 
         postTransaction(transactionRequest, status().isUnprocessableEntity());
@@ -120,6 +118,7 @@ class TransactionControllerTest {
                 .andExpect(expectedStatus)
                 .andDo(print());
     }
+
 
 
     private String asJsonString(final Object obj) {
