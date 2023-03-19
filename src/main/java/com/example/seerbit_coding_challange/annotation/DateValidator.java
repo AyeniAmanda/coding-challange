@@ -17,12 +17,9 @@ import static java.lang.annotation.ElementType.PARAMETER;
 @Documented
 @Constraint(validatedBy = DateValidatorImpl.class)
 public @interface DateValidator {
-    //error message
-    String message() default "Date cannot be in the future";
-
-    //represents group of constraints
     Class<?>[] groups() default {};
 
-    //represents additional information about annotation
+    String message() default "Date cannot be in the future";
+
     Class<? extends Payload>[] payload() default {};
 }

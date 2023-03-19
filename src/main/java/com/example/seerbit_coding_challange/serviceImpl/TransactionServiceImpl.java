@@ -1,6 +1,6 @@
 package com.example.seerbit_coding_challange.serviceImpl;
 
-import com.example.seerbit_coding_challange.request.TransactionRequest;
+import com.example.seerbit_coding_challange.request.PaymentRequest;
 import com.example.seerbit_coding_challange.response.StatisticsResponse;
 import com.example.seerbit_coding_challange.service.TransactionService;
 import org.springframework.stereotype.Service;
@@ -15,20 +15,25 @@ import java.util.List;
 @Service
 public class TransactionServiceImpl implements TransactionService {
 
-    private final List<TransactionRequest> transactionRequestList = Collections.synchronizedList(new ArrayList<>());
+    private final List<PaymentRequest> paymentRequestList = Collections.synchronizedList(new ArrayList<>());
 
     @Override
-    public void saveTransaction(TransactionRequest transactionRequest) {
+    public void saveTransaction(PaymentRequest paymentRequest) {
         //Add request to in-memory List
-        transactionRequestList.add(transactionRequest);
+        paymentRequestList.add(paymentRequest);
+    }
+
+    @Override
+    public void deleteTransactions() {
+        this.paymentRequestList.clear();
     }
 
     @Override
     public StatisticsResponse getStatistics() {
-        if (transactionRequestList.isEmpty())
+        if (paymentRequestList.isEmpty())
             return new StatisticsResponse();
 
-        BigDecimal max = transactionRequestList.get(0).getAmount();
+        BigDecimal max = paymentRequestList.get(0).getAmount();
         if (max == null) {
             max = new BigDecimal("0.00");
         }
@@ -36,10 +41,10 @@ public class TransactionServiceImpl implements TransactionService {
         BigDecimal sum = new BigDecimal("0.00");
         long count = 0;
 
-        synchronized (transactionRequestList) {
+        synchronized (paymentRequestList) {
             // Must be in synchronized block
-            for (TransactionRequest tran : transactionRequestList) {
-                if (tran.getTimestamp().isBefore(LocalDateTime.now().minusSeconds(30)))
+            for (PaymentRequest tran : paymentRequestList) {
+                if (tran.getPaymentDate().isBefore(LocalDateTime.now().minusSeconds(30)))
                     continue;
 
                 if (tran.getAmount().compareTo(max) > 0)
@@ -65,12 +70,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<TransactionRequest> fetchAllTransactionList() {
-        return this.transactionRequestList;
-    }
-
-    @Override
-    public void deleteTransactions() {
-        this.transactionRequestList.clear();
+    public List<PaymentRequest> fetchAllTransactionList() {
+        return this.paymentRequestList;
     }
 }

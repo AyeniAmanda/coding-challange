@@ -1,6 +1,6 @@
 package com.example.seerbit_coding_challange.controller;
 
-import com.example.seerbit_coding_challange.request.TransactionRequest;
+import com.example.seerbit_coding_challange.request.PaymentRequest;
 import com.example.seerbit_coding_challange.response.StatisticsResponse;
 import com.example.seerbit_coding_challange.service.TransactionService;
 import jakarta.validation.Valid;
@@ -16,16 +16,23 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class TransactionController {
 
+    private static final int MAX_TRANSACTION_AGE_IN_SECONDS = 30;
+
     private final TransactionService transactionService;
 
     @PostMapping()
-    public ResponseEntity<?> postTransaction(@RequestBody @Valid TransactionRequest transactionRequest) {
-        if (transactionRequest.getTimestamp().isBefore(LocalDateTime.now().minusSeconds(30)))
+    public ResponseEntity<?> postTransaction(@RequestBody @Valid PaymentRequest paymentRequest) {
+        if (isTransactionTooOld(paymentRequest.getPaymentDate()))
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
-        //Only save transactions completed less than 30seconds
-        transactionService.saveTransaction(transactionRequest);
+        transactionService.saveTransaction(paymentRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> deleteTransaction() {
+        transactionService.deleteTransactions();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/statistics")
@@ -33,9 +40,7 @@ public class TransactionController {
         return new ResponseEntity<>(transactionService.getStatistics(), HttpStatus.OK);
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> deleteTransaction() {
-        transactionService.deleteTransactions();
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    private boolean isTransactionTooOld(LocalDateTime timestamp) {
+        return timestamp.isBefore(LocalDateTime.now().minusSeconds(MAX_TRANSACTION_AGE_IN_SECONDS));
     }
 }

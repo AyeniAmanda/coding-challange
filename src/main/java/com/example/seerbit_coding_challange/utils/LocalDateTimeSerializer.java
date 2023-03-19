@@ -1,26 +1,19 @@
 package com.example.seerbit_coding_challange.utils;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
+public class LocalDateTimeSerializer extends JsonSerializer<LocalDateTime> {
 
-public class LocalDateTimeSerializer extends StdSerializer<LocalDateTime> {
-
-    public LocalDateTimeSerializer() {
-        super(LocalDateTime.class);
-    }
+    private static final DateTimeFormatter ISO_DATE_TIME_FORMATTER = DateTimeFormatter.ISO_DATE_TIME;
 
     @Override
-    public void serialize(
-            LocalDateTime value,
-            JsonGenerator gen,
-            SerializerProvider arg2)
-            throws IOException {
-        gen.writeString(ISO_DATE_TIME.format(value));
+    public void serialize(LocalDateTime localDateTime, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+        jsonGenerator.writeString(ISO_DATE_TIME_FORMATTER.format(localDateTime));
     }
 }

@@ -1,6 +1,6 @@
 package com.example.seerbit_coding_challange.controller;
 
-import com.example.seerbit_coding_challange.request.TransactionRequest;
+import com.example.seerbit_coding_challange.request.PaymentRequest;
 import com.example.seerbit_coding_challange.service.TransactionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.core.Is;
@@ -59,43 +59,43 @@ class TransactionControllerTest {
 
     @Test
     void should_successfully_post_transaction() throws Exception {
-        TransactionRequest transactionRequest = TransactionRequest.builder()
+        PaymentRequest paymentRequest = PaymentRequest.builder()
                 .amount(new BigDecimal("12.3343"))
-                .timestamp(LocalDateTime.now())
+                .paymentDate(LocalDateTime.now())
                 .build();
 
-        postTransaction(transactionRequest, status().isCreated());
+        postTransaction(paymentRequest, status().isCreated());
     }
 
     @Test
     void whenTimestampIsStaleByAtLeast30Seconds_thenShouldReturnStatusNoContent() throws Exception {
-        TransactionRequest transactionRequest = TransactionRequest.builder()
+        PaymentRequest paymentRequest = PaymentRequest.builder()
                 .amount(new BigDecimal("12.3343"))
-                .timestamp(LocalDateTime.parse("2022-05-13T01:30:51.312Z", ISO_DATE_TIME))
+                .paymentDate(LocalDateTime.parse("2022-05-13T01:30:51.312Z", ISO_DATE_TIME))
                 .build();
 
-        postTransaction(transactionRequest, status().isNoContent());
+        postTransaction(paymentRequest, status().isNoContent());
     }
 
-//    @Test
-//    void whenMoreThanFourFractionalDigits_thenShouldGiveConstraintViolations() throws Exception {
-//        TransactionRequest transactionRequest = TransactionRequest.builder()
-//                .amount(new BigDecimal("12.33435"))
-//                .timestamp(LocalDateTime.parse("2022-05-13T00:45:51.312Z", ISO_DATE_TIME ))
-//                .build();
-//
-//        postTransaction(transactionRequest, status().isUnprocessableEntity());
-//    }
-//
-//    @Test
-//    void whenDateIsInFuture_thenShouldGiveConstraintViolations() throws Exception {
-//        TransactionRequest transactionRequest = TransactionRequest.builder()
-//                .amount(new BigDecimal("12.35"))
-//                .timestamp(LocalDateTime.parse("2023-05-13T00:45:51.312Z", ISO_DATE_TIME ))
-//                .build();
-//
-//        postTransaction(transactionRequest, status().isUnprocessableEntity());
-//    }
+    @Test
+    void whenMoreThanFourFractionalDigits_thenShouldGiveConstraintViolations() throws Exception {
+        PaymentRequest transactionRequest = PaymentRequest.builder()
+                .amount(new BigDecimal("12.33435"))
+                .paymentDate(LocalDateTime.parse("2022-05-13T00:45:51.312Z", ISO_DATE_TIME ))
+                .build();
+
+        postTransaction(transactionRequest, status().isUnprocessableEntity());
+    }
+
+    @Test
+    void whenDateIsInFuture_thenShouldGiveConstraintViolations() throws Exception {
+        PaymentRequest transactionRequest = PaymentRequest.builder()
+                .amount(new BigDecimal("12.35"))
+                .paymentDate(LocalDateTime.parse("2023-05-13T00:45:51.312Z", ISO_DATE_TIME ))
+                .build();
+
+        postTransaction(transactionRequest, status().isUnprocessableEntity());
+    }
 
     @Test
     void whenStatisticsIsFetched_shouldReturnSuccess() throws Exception {
@@ -119,10 +119,10 @@ class TransactionControllerTest {
                 .andDo(print());
     }
 
-    private void postTransaction(TransactionRequest transactionRequest, ResultMatcher expectedStatus) throws Exception {
+    private void postTransaction(PaymentRequest paymentRequest, ResultMatcher expectedStatus) throws Exception {
 
         mockMvc.perform(post(URL_BASE)
-                        .contentType(APPLICATION_JSON).content(asJsonString(transactionRequest)))
+                        .contentType(APPLICATION_JSON).content(asJsonString(paymentRequest)))
                 .andExpect(expectedStatus)
                 .andDo(print());
     }

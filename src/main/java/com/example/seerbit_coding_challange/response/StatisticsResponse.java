@@ -13,10 +13,9 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StatisticsResponse implements Serializable {
-
-    private BigDecimal min = new BigDecimal("0.00");
     private BigDecimal max = new BigDecimal("0.00");
     private BigDecimal avg = new BigDecimal("0.00");
+    private BigDecimal min = new BigDecimal("0.00");
     private BigDecimal sum = new BigDecimal("0.00");
     private long count = 0;
 }

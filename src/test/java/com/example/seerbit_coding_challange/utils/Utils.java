@@ -1,7 +1,6 @@
 package com.example.seerbit_coding_challange.utils;
 
-
-import com.example.seerbit_coding_challange.request.TransactionRequest;
+import com.example.seerbit_coding_challange.request.PaymentRequest;
 import com.example.seerbit_coding_challange.response.StatisticsResponse;
 
 import java.math.BigDecimal;
@@ -18,12 +17,15 @@ public final class Utils {
                 .min(new BigDecimal("2.33"))
                 .avg(new BigDecimal("9.00"))
                 .sum(new BigDecimal("27.00"))
-                .count(3).build();
+                .count(3)
+                .build();
     }
 
-    public static TransactionRequest formRequest(String amount, LocalDateTime dateTime) {
-        return TransactionRequest.builder()
-                .timestamp(dateTime)
-                .amount(new BigDecimal(amount)).build();
+    public static PaymentRequest formRequest(String amount, LocalDateTime dateTime) {
+        return PaymentRequest.builder()
+                .paymentDate(dateTime)
+                .amount(new BigDecimal(amount))
+                .build();
     }
 }
+
