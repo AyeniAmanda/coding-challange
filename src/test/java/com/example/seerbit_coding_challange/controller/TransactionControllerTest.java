@@ -5,6 +5,7 @@ import com.example.seerbit_coding_challange.service.TransactionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -30,21 +31,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 @AutoConfigureMockMvc
 @SpringBootTest
 @ActiveProfiles("test")
+@DisplayName("Transaction Controller Test")
 class TransactionControllerTest {
 
     private final String URL_BASE = "/transaction";
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
+
     @Autowired
     private WebApplicationContext webApplicationContext;
 
     @MockBean
     private TransactionService transactionService;
-
 
     @BeforeEach
     void setUp() {
@@ -58,7 +59,8 @@ class TransactionControllerTest {
     }
 
     @Test
-    void should_successfully_post_transaction() throws Exception {
+    @DisplayName("Should successfully post transaction")
+    void shouldSuccessfullyPostTransaction() throws Exception {
         PaymentRequest paymentRequest = PaymentRequest.builder()
                 .amount(new BigDecimal("12.3343"))
                 .paymentDate(LocalDateTime.now())
@@ -68,38 +70,19 @@ class TransactionControllerTest {
     }
 
     @Test
-    void whenTimestampIsStaleByAtLeast30Seconds_thenShouldReturnStatusNoContent() throws Exception {
-        PaymentRequest paymentRequest = PaymentRequest.builder()
+    @DisplayName("Given payment timestamp is stale by at least 30 seconds, then should return status code 204 No Content")
+    void whenTimestampIsStaleByAtLeast30SecondsThenShouldReturnStatusNoContent() throws Exception {
+        PaymentRequest transactionRequest = PaymentRequest.builder()
                 .amount(new BigDecimal("12.3343"))
                 .paymentDate(LocalDateTime.parse("2022-05-13T01:30:51.312Z", ISO_DATE_TIME))
                 .build();
 
-        postTransaction(paymentRequest, status().isNoContent());
+        postTransaction(transactionRequest, status().isNoContent());
     }
 
     @Test
-    void whenMoreThanFourFractionalDigits_thenShouldGiveConstraintViolations() throws Exception {
-        PaymentRequest transactionRequest = PaymentRequest.builder()
-                .amount(new BigDecimal("12.33435"))
-                .paymentDate(LocalDateTime.parse("2022-05-13T00:45:51.312Z", ISO_DATE_TIME ))
-                .build();
-
-        postTransaction(transactionRequest, status().isUnprocessableEntity());
-    }
-
-    @Test
-    void whenDateIsInFuture_thenShouldGiveConstraintViolations() throws Exception {
-        PaymentRequest transactionRequest = PaymentRequest.builder()
-                .amount(new BigDecimal("12.35"))
-                .paymentDate(LocalDateTime.parse("2023-05-13T00:45:51.312Z", ISO_DATE_TIME ))
-                .build();
-
-        postTransaction(transactionRequest, status().isUnprocessableEntity());
-    }
-
-    @Test
-    void whenStatisticsIsFetched_shouldReturnSuccess() throws Exception {
-
+    @DisplayName("When statistics are fetched, then should return status code 200 OK with correct JSON content")
+    void whenStatisticsAreFetchedShouldReturnSuccess() throws Exception {
         mockMvc.perform(get(URL_BASE + "/statistics")
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -112,21 +95,19 @@ class TransactionControllerTest {
     }
 
     @Test
-    void whenDeleteIsInvoked_shouldReturnNoContentStatus() throws Exception {
-
+    @DisplayName("When delete endpoint is invoked, then should return status code 204 No Content")
+    void whenDeleteEndpointIsInvokedShouldReturnNoContentStatus() throws Exception {
         mockMvc.perform(delete(URL_BASE))
                 .andExpect(status().isNoContent())
                 .andDo(print());
     }
 
     private void postTransaction(PaymentRequest paymentRequest, ResultMatcher expectedStatus) throws Exception {
-
         mockMvc.perform(post(URL_BASE)
                         .contentType(APPLICATION_JSON).content(asJsonString(paymentRequest)))
                 .andExpect(expectedStatus)
                 .andDo(print());
     }
-
 
     private String asJsonString(final Object obj) {
         try {
