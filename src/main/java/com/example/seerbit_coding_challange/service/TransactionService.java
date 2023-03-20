@@ -8,7 +8,10 @@ import java.util.List;
 public interface TransactionService {
 
     void saveTransaction(PaymentRequest paymentRequest);
+
     void deleteTransactions();
+
     StatisticsResponse getStatistics();
+
     List<PaymentRequest> fetchAllTransactionList();
 }
